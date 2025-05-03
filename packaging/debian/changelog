@@ -6,8 +6,7 @@ scantailor-deviant (0.2.15-0ubuntu1) bionic; urgency=medium
   * Zoom all by double click
   * New dark_blue style, fix old breeze and ubuntu styles
 
- -- noobie-iv <noobie-iv@mail.ru>  Sat, 19 Apr 2025 16:00:00 +0300
- -- zvezdochiot <mykaralw@yandex.ru>  Sat, 19 Apr 2025 16:00:00 +0300
+ -- noobie-iv <noobie-iv@mail.ru>, zvezdochiot <mykaralw@yandex.ru>  Sat, 19 Apr 2025 16:00:00 +0300
 
 scantailor-universal (0.2.14-0ubuntu1) bionic; urgency=medium
 

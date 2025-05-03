@@ -95,22 +95,39 @@ OPTION(ENABLE_OPENGL "OpenGL may be used for UI acceleration" ${use_opengl})
 
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)
+SET(CMAKE_AUTORCC ON)
 
-SET(Qt_MIN_VERSION 5.7.0)
+if(NOT DEFINED QtPkgList)
+    set(QtPkgList "Qt5;Qt6")
+endif()
+
+foreach(QtPkg ${QtPkgList})
+  if(ENABLE_OPENGL)
+        find_package(QT NAMES ${QtPkg} HINTS "${QT_ROOT_DIR}" CONFIG REQUIRED COMPONENTS Core Widgets Gui Xml Network Svg LinguistTools OpenGL)
+  else()
+        find_package(QT NAMES ${QtPkg} HINTS "${QT_ROOT_DIR}" CONFIG REQUIRED COMPONENTS Core Widgets Gui Xml Network Svg LinguistTools)
+  endif()
+
+  if(QT_FOUND)
+        break()
+  endif()
+endforeach()
+
+if(ENABLE_OPENGL)
+        find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets Gui Xml Network Svg LinguistTools OpenGL REQUIRED)
+else()
+        find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets Gui Xml Network Svg LinguistTools REQUIRED)
+endif()
+
+SET(QT_MIN_VERSION 5.7.0)
+if (QT_VERSION VERSION_LESS ${QT_MIN_VERSION})
+        message(FATAL_ERROR "Minimum supported Qt version is ${QT_MIN_VERSION}!")
+endif()
+
 IF(APPLE)
    # Not used but required for loading cocoa plugin
-   FIND_PACKAGE(Qt5PrintSupport ${Qt_MIN_VERSION} REQUIRED)
+   FIND_PACKAGE(Qt${QT_VERSION_MAJOR} COMPONENTS PrintSupport REQUIRED)
 ENDIF(APPLE)
-FIND_PACKAGE(Qt5Core ${Qt_MIN_VERSION} REQUIRED)
-FIND_PACKAGE(Qt5Gui ${Qt_MIN_VERSION} REQUIRED)
-FIND_PACKAGE(Qt5Widgets ${Qt_MIN_VERSION} REQUIRED)
-FIND_PACKAGE(Qt5Xml ${Qt_MIN_VERSION} REQUIRED)
-FIND_PACKAGE(Qt5Network ${Qt_MIN_VERSION} REQUIRED)
-FIND_PACKAGE(Qt5Svg ${Qt_MIN_VERSION} REQUIRED)
-FIND_PACKAGE(Qt5LinguistTools ${Qt_MIN_VERSION} REQUIRED)
-IF(ENABLE_OPENGL)
-        FIND_PACKAGE(Qt5OpenGL ${Qt_MIN_VERSION} REQUIRED)
-ENDIF()
 
 SET(EXTRA_LIBS "")
 
@@ -208,7 +225,7 @@ ENDIF(WIN32)
 SET(MAYBE_QT_OPENGL_MODULE "")
 IF(ENABLE_OPENGL)
         LIST(APPEND EXTRA_LIBS ${OPENGL_LIBRARIES})
-        SET(MAYBE_QT_OPENGL_MODULE Qt5::OpenGL)
+        SET(MAYBE_QT_OPENGL_MODULE Qt${QT_VERSION_MAJOR}::OpenGL)
 ENDIF()
 
 # Prepare config.h

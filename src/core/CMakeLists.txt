@@ -132,16 +132,21 @@ ENDIF(ENABLE_OPENJPEG)
 
 SOURCE_GROUP("Sources" FILES ${common_sources} ${core_ui_sources})
 
-QT5_ADD_RESOURCES(core_resource_sources resources/core_resources.qrc)
+if (${QT_VERSION_MAJOR} VERSION_LESS 6.0.0)
+        QT5_ADD_RESOURCES(core_resource_sources resources/core_resources.qrc)
+else()
+        QT_ADD_RESOURCES(core_resource_sources resources/core_resources.qrc)
+endif()
+
 SOURCE_GROUP("Generated" FILES ${core_resource_sources})
 SOURCE_GROUP("Resources" FILES ${core_resource_sources})
 
 ADD_LIBRARY(stcore STATIC ${core_resource_sources} ${common_sources} ${core_ui_sources})
 
 IF(APPLE)
-        TARGET_LINK_LIBRARIES(stcore Qt5::Widgets Qt5::Xml Qt5::PrintSupport ${MAYBE_QT_OPENGL_MODULE})
+        TARGET_LINK_LIBRARIES(stcore Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::PrintSupport ${MAYBE_QT_OPENGL_MODULE})
 ELSE()
-        TARGET_LINK_LIBRARIES(stcore Qt5::Widgets Qt5::Xml ${MAYBE_QT_OPENGL_MODULE})
+        TARGET_LINK_LIBRARIES(stcore Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml ${MAYBE_QT_OPENGL_MODULE})
 ENDIF()
 
 ADD_DEPENDENCIES(stcore core_ui_sources) 

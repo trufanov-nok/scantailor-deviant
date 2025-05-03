@@ -36,3 +36,5 @@ FOREACH(qm_file ${QM_FILES})
         STRING(REGEX REPLACE "^.*scantailor-deviant_(.*)\.qm" "\\1" qtbase_qm_name "${qm_file}")
         INSTALL(DIRECTORY DESTINATION "scantailor-deviant.app/Contents/Resources/${qtbase_qm_name}.lproj")
 ENDFOREACH()
+
+include(CPack)

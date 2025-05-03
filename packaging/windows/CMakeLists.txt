@@ -150,3 +150,5 @@ IF(ENABLE_EXIV2)
         ENDIF()
         install(FILES "${EXIV2_DLL}"  DESTINATION .)
 ENDIF()
+
+include(CPack)

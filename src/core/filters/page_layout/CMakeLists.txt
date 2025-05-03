@@ -25,5 +25,5 @@ FILE(GLOB ui_files "ui/*.ui")
 SOURCE_GROUP("UI Files" FILES ${ui_files})
 
 ADD_LIBRARY(page_layout STATIC ${sources} ${ui_sources})
-TARGET_LINK_LIBRARIES(page_layout Qt5::Widgets Qt5::Xml)
+TARGET_LINK_LIBRARIES(page_layout Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml)
 TRANSLATION_SOURCES(scantailor-deviant ${sources} ${ui_files})

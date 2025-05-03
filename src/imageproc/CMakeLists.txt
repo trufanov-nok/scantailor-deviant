@@ -63,7 +63,7 @@ SET(
 SOURCE_GROUP(Sources FILES ${sources})
 
 ADD_LIBRARY(imageproc STATIC ${sources})
-TARGET_LINK_LIBRARIES(imageproc Qt5::Core Qt5::Gui)
+TARGET_LINK_LIBRARIES(imageproc Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui)
 IF(ENABLE_TESTS)
         ADD_SUBDIRECTORY(tests)
 ENDIF()
