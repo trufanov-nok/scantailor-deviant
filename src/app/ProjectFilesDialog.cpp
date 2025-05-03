@@ -234,7 +234,11 @@ ProjectFilesDialog::ProjectFilesDialog(QWidget* parent)
         m_autoOutDir(true)
 {
     QString filter = QSettings().value(_key_app_open_filetype_filter, _key_app_open_filetype_filter_def).toString();
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     const QStringList list = filter.toLower().split(' ', QString::SkipEmptyParts);
+#else
+    const QStringList list = filter.toLower().split(' ', Qt::SkipEmptyParts);
+#endif
     for (QString ext : list) {
         ext = ext.trimmed();
         if (int i = ext.lastIndexOf('.')) {

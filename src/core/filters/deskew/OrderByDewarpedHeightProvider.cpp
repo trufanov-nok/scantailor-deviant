@@ -123,7 +123,7 @@ OrderByDewarpedHeightProvider::hint(PageId const& page) const
             Value const height = page_params->perspectiveParams().sizeParams().height();
             if (height.isValid())
             {
-                return res.arg(height, 0, 'f', 0);
+                return res.arg(height.toDouble(), 0, 'f', 0);
             }
             else
             {
@@ -135,7 +135,7 @@ OrderByDewarpedHeightProvider::hint(PageId const& page) const
             Value const height = page_params->dewarpingParams().sizeParams().height();
             if (height.isValid())
             {
-                return res.arg(height, 0, 'f', 0);
+                return res.arg(height.toDouble(), 0, 'f', 0);
             }
             else
             {

@@ -735,7 +735,11 @@ ImageViewBase::resizeEvent(QResizeEvent* event)
 }
 
 void
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 ImageViewBase::enterEvent(QEvent* event)
+#else
+ImageViewBase::enterEvent(QEnterEvent* event)
+#endif
 {
     viewport()->setFocus();
     QAbstractScrollArea::enterEvent(event);

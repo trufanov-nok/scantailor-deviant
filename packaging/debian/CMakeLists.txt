@@ -19,7 +19,7 @@ else()
         endif()
 endif()
 
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libtiff-dev (>=4.0.3), libjpeg8-dev (>=8c), libpng-dev (>=1.6.2), libboost-dev (>=1.35.0), libboost-test-dev (>=1.35.0), cmake (>=2.8.9), libcanberra0(>=0.30), libopenjp2-7 (>=2.3), libexiv2-dev (>=0.26)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libtiff-dev (>=4.0.3), libjpeg8-dev (>=8c), libpng-dev (>=1.6.2), libboost-dev (>=1.35.0), libboost-test-dev (>=1.35.0), libcanberra0(>=0.30), libopenjp2-7 (>=2.3), libexiv2-dev (>=0.26)")
 
 if (OPENMP_FOUND)
         set(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libomp5 | libomp5-16")

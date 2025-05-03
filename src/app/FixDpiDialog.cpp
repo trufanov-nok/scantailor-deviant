@@ -246,7 +246,11 @@ FixDpiDialog::FixDpiDialog(std::vector<ImageFileInfo> const& files, QWidget* par
     m_errorPalette = m_normalPalette;
     m_errorPalette.setColor(QPalette::Text, Qt::red);
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     const QStringList sl = QSettings().value(_key_dpi_predefined_list, _key_dpi_predefined_list_def).toString().split(',', QString::KeepEmptyParts);
+#else
+    const QStringList sl = QSettings().value(_key_dpi_predefined_list, _key_dpi_predefined_list_def).toString().split(',', Qt::KeepEmptyParts);
+#endif
     for (QString const& s : sl) {
         const QStringList nums = s.split('x');
         bool ok = nums.count() >= 2;

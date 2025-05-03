@@ -37,7 +37,12 @@ OutputFileParams::OutputFileParams(QFileInfo const& file_info)
 {
     if (file_info.exists()) {
         m_size = file_info.size();
+#if QT_VERSION < QT_VERSION_CHECK(5, 8, 0)
         m_mtime = file_info.lastModified().toTime_t();
+#else
+        m_mtime = file_info.lastModified().toSecsSinceEpoch();
+#endif
+
     }
 }
 

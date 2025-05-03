@@ -111,7 +111,7 @@ OrderByPaperBendProvider::hint(PageId const& page) const
             Value const bend = page_params->dewarpingParams().bendParams().bend();
             if (bend.isValid())
             {
-                return res.arg(bend, 0, 'f', 3);
+                return res.arg(bend.toDouble(), 0, 'f', 3);
             }
             else
             {

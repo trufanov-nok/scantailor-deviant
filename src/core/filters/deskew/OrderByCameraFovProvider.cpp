@@ -115,7 +115,7 @@ OrderByCameraFovProvider::hint(PageId const& page) const
         {
             Value const fov = page_params->perspectiveParams().fovParams().fov();
             if(fov.isValid())
-                return res.arg(fov, 0, 'f', 3);
+                return res.arg(fov.toDouble(), 0, 'f', 3);
             else
                 return res.arg(QObject::tr("unknown"));
         }
@@ -123,7 +123,7 @@ OrderByCameraFovProvider::hint(PageId const& page) const
         {
             Value const fov = page_params->dewarpingParams().fovParams().fov();
             if(fov.isValid())
-                return res.arg(fov, 0, 'f', 3);
+                return res.arg(fov.toDouble(), 0, 'f', 3);
             else
                 return res.arg(QObject::tr("unknown"));
         }

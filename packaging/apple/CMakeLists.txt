@@ -1,5 +1,10 @@
 set(CPACK_GENERATOR "Bundle")
 
+set(CPACK_BUNDLE_NAME "Scantailor Deviant")
+set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist")
+set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/ScanTailor.icns")
+
+
 INSTALL(IMPORTED_RUNTIME_ARTIFACTS scantailor-deviant
             RUNTIME_DEPENDENCY_SET runtime
             BUNDLE DESTINATION .

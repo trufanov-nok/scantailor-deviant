@@ -2194,7 +2194,11 @@ MainWindow::showAboutDialog()
     ui.setupUi(dialog);
     ui.tabWidget->setCurrentIndex(0); // in case I forget to switch it back in UI Designer
     ui.version->setText(QString::fromUtf8(VERSION) + "\n" + tr("build on ") +
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
                         QDate(BUILD_YEAR, BUILD_MONTH, BUILD_DAY).toString(Qt::SystemLocaleShortDate));
+#else
+                        QLocale::system().toString(QDate(BUILD_YEAR, BUILD_MONTH, BUILD_DAY), QLocale::ShortFormat));
+#endif
 
     QResource license(":/GPLv3.html");
     ui.licenseViewer->setHtml(QString::fromUtf8((char const*)license.data(), license.size()));
@@ -2523,7 +2527,11 @@ MainWindow::showInsertFileDialog(BeforeOrAfter before_or_after, ImageId const& e
     protected:
         virtual bool filterAcceptsRow(int source_row, QModelIndex const& source_parent) const override
         {
+#if QT_VERSION < QT_VERSION_CHECK(5, 8, 0)
             QModelIndex const idx(source_parent.child(source_row, 0));
+#else
+            QModelIndex const idx = index(source_row, 0, source_parent);
+#endif
             QVariant const data(idx.data(QFileSystemModel::FilePathRole));
             if (data.isNull()) {
                 return true;

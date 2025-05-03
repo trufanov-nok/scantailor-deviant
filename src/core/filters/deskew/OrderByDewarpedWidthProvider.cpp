@@ -114,7 +114,7 @@ OrderByDewarpedWidthProvider::hint(PageId const& page) const
         {
             Value const width = page_params->perspectiveParams().sizeParams().width();
             if(width.isValid())
-                return res.arg(width, 0, 'f', 0);
+                return res.arg(width.toDouble(), 0, 'f', 0);
             else
                 return res.arg(QObject::tr("unknown"));
         }
@@ -122,7 +122,7 @@ OrderByDewarpedWidthProvider::hint(PageId const& page) const
         {
             Value const width = page_params->dewarpingParams().sizeParams().width();
             if (width.isValid())
-                return res.arg(width, 0, 'f', 0);
+                return res.arg(width.toDouble(), 0, 'f', 0);
             else
                 return res.arg(QObject::tr("unknown"));
         }

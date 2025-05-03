@@ -1,0 +1,229 @@
+name: Unit tests
+
+on:
+  push:
+    branches:
+      - main
+      - CI
+  pull_request: {}
+
+jobs:
+
+  linux-Qt5:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Update package lists
+        run: sudo apt-get update
+      - name: Install packages
+        run: sudo apt-get install -y qtbase5-dev libqt5svg5-dev qttools5-dev libtiff5-dev libjpeg-dev libpng-dev libboost-all-dev libcanberra-dev libopenjp2-7-dev libeigen3-dev libexiv2-dev
+
+      - uses: actions/checkout@v4
+      - name: Build
+        env:
+          QT_VER: 'Qt5'
+          CMAKE_BUILD_TYPE: Release
+          CPP_STANDARD: 17
+        run: |
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+
+      - name: Make Package
+        run: .build/package.sh
+      - name: Test deb package
+        run: |
+          sudo apt install -y lintian
+          DEB_FILE=`ls ./build/ | grep .deb | head -1`
+          lintian build/$DEB_FILE
+      - name: Install package
+        run: |
+          sudo apt install -y libomp5
+          DEB_FILE=`ls ./build/ | grep .deb | head -1`
+          sudo dpkg -i build/$DEB_FILE
+      - name: Archive deb package
+        uses: actions/upload-artifact@v4
+        with:
+          name: scantailor-deviant-linux-qt5
+          path: build/scantailor-deviant-*.deb
+      # - name: Run tests
+      #   run:
+
+  linux-Qt6:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Update package lists
+        run: sudo apt-get update
+      - name: Install packages
+        run: sudo apt-get install -y qt6-base-dev libqt6svg6-dev qt6-tools-dev libtiff5-dev libjpeg-dev libpng-dev libboost-all-dev libcanberra-dev libopenjp2-7-dev libeigen3-dev libexiv2-dev
+
+      - uses: actions/checkout@v4
+      - name: Build
+        env:
+          QT_VER: 'Qt6'
+          CMAKE_BUILD_TYPE: Release
+          CPP_STANDARD: 17
+        run: |
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+
+      - name: Make Package
+        run: .build/package.sh
+      - name: Test deb package
+        run: |
+          sudo apt install -y lintian
+          DEB_FILE=`ls ./build/ | grep .deb | head -1`
+          lintian build/$DEB_FILE
+      - name: Install package
+        run: |
+          sudo apt install -y libomp5
+          DEB_FILE=`ls ./build/ | grep .deb | head -1`
+          sudo dpkg -i build/$DEB_FILE
+      - name: Archive deb package
+        uses: actions/upload-artifact@v4
+        with:
+          name: scantailor-deviant-linux-qt6
+          path: build/scantailor-deviant-*.deb
+      # - name: Run tests
+      #   run:
+
+  macos-15-Qt6:
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install packages
+        run: brew install jpeg libpng boost libcanberra openjpeg eigen exiv2
+      - name: Install Qt
+        run: brew install qt@6
+      - name: Build
+        env:
+          QT_VER: 'Qt6'
+          CPP_STANDARD: 17
+          CMAKE_BUILD_TYPE: Debug
+        run: |
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+      # - name: Run tests
+      #   run:
+
+  macos-13-Qt5:
+    runs-on: macos-13
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install packages
+        run: brew install jpeg libpng boost libcanberra openjpeg eigen exiv2
+      - name: Install Qt
+        run: brew install qt@5 && brew link qt@5 --force
+      - name: Build
+        env:
+          QT_VER: 'Qt5'
+          CPP_STANDARD: 17
+          CMAKE_BUILD_TYPE: Debug
+        run: |
+          export PATH="/usr/local/opt/qt@5/bin:$PATH"
+          export LDFLAGS="-L/usr/local/opt/qt@5/lib"
+          export CPPFLAGS="-I/usr/local/opt/qt@5/include"
+          export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig"
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+      # - name: Run tests
+      #   run:
+
+  windows-Qt6:
+    runs-on: windows-latest
+    # NB: see https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md for what's available in this image
+    steps:
+      - name: Install Qt6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.*'
+      - uses: actions/checkout@v4
+      - name: restore
+        run: |
+          C:\vcpkg\bootstrap-vcpkg.bat
+          C:\vcpkg\vcpkg install gtest:x64-windows zlib:x64-windows
+      - name: build
+        env:
+          QT_VER: 'Qt6'
+        run: |
+          .build\build.ps1 -GTestPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+      # - name: tests
+      #   run:
+
+  windows-Qt5:
+    runs-on: windows-latest
+    # NB: see https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md for what's available in this image
+    steps:
+      - name: Install Qt5
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.*'
+      - uses: actions/checkout@v4
+      - name: restore
+        run: |
+          C:\vcpkg\bootstrap-vcpkg.bat
+          C:\vcpkg\vcpkg install gtest:x64-windows zlib:x64-windows
+      - name: build
+        env:
+          QT_VER: 'Qt5'
+        run: |
+          .build\build.ps1 -GTestPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+      # - name: unittest
+      #   run:
+
+  freebsd_14_2-Qt5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run in FreeBSD
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          usesh: true
+          prepare: |
+            pkg install -y git cmake qt5-core qt5-widgets qt5-svg qt5-xml qt5-linguisttools qt5-opengl qt5-printsupport qt5-qmake qt5-buildtools tiff libjpeg-turbo png boost-all libcanberra openjpeg eigen exiv2
+
+          run: |
+            echo '#### System information'
+            whoami
+            env
+            freebsd-version
+            c++ --version || :
+            gcc --version || :
+            clang++ --version || :
+            pkg info
+
+            echo '#### Building'
+            .build/build.sh -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+
+            echo '#### Testing'
+
+  netbsd_10_1-Qt5:
+    runs-on: ubuntu-latest
+    # Doesn't use clang, has gcc:
+    # c++ (nb3 20231008) 10.5.0
+    # Copyright (C) 2020 Free Software Foundation, Inc.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run in NetBSD
+        uses: vmactions/netbsd-vm@v1
+        with:
+          release: "10.1"
+          usesh: true
+          prepare: |
+            /usr/sbin/pkg_add cmake qt5-qtbase qt5-qtsvg tiff jpeg png boost libcanberra openjpeg eigen exiv2
+
+          run: |
+            echo '#### System information'
+            whoami
+            env
+            c++ --version
+            gcc --version
+
+            echo '#### Building'
+            .build/build.sh -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+
+            echo '#### Testing'
+

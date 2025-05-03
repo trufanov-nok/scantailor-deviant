@@ -21,7 +21,11 @@ QMenu* OpenWithMenuProvider::getOpenWithMenu(const QString& mime_type)
             while (!mc.atEnd()) {
                 QString s = mc.readLine().trimmed();
                 if (s.startsWith(mime_type + "=")) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
                     apps = get_val(s).split(';', QString::SkipEmptyParts);
+#else
+                    apps = get_val(s).split(';', Qt::SkipEmptyParts);
+#endif
                     break;
                 }
             }

@@ -263,7 +263,12 @@ SettingsDialog::populateTreeWidget(QTreeWidget* treeWidget)
                                            <<        tr("Despeckling")
                                            <<        tr("Image metadata");
     const QResource tree_metadata(":/SettingsTreeData.tsv");
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QStringList tree_data = QString::fromUtf8((char const*)tree_metadata.data(), tree_metadata.size()).split(QRegExp("\r?\n"));
+#else
+    static const QRegularExpression rex_endl("\r?\n");
+    QStringList tree_data = QString::fromUtf8((char const*)tree_metadata.data(), tree_metadata.size()).split(rex_endl);
+#endif
 
     QTreeWidgetItem* last_top_item = nullptr;
     QTreeWidgetItem* parent_item = nullptr;
@@ -276,12 +281,19 @@ SettingsDialog::populateTreeWidget(QTreeWidget* treeWidget)
     int max_text_width = 0;
 
     for (QString const& name : settingsTreeTitles) {
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
         QStringList metadata = tree_data[idx++].split('\t', QString::KeepEmptyParts);
+#else
+        QStringList metadata = tree_data[idx++].split('\t', Qt::KeepEmptyParts);
+#endif
         Q_ASSERT(!metadata.isEmpty());
 
         int level = 0;
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
         int item_text_width = item_indentation + fm.width(name);
+#else
+        int item_text_width = item_indentation + fm.horizontalAdvance(name);
+#endif
 
         while (metadata[level++].isEmpty()) {
             item_text_width += item_indentation;
@@ -326,7 +338,12 @@ SettingsDialog::populateTreeWidget(QTreeWidget* treeWidget)
 
     max_text_width = std::max(max_text_width + 20, 200);
     treeWidget->setColumnWidth(0, max_text_width);
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     treeWidget->setColumnWidth(1, fm.width(treeWidget->headerItem()->text(1)) + 20);
+#else
+    treeWidget->setColumnWidth(1, fm.horizontalAdvance(treeWidget->headerItem()->text(1)) + 20);
+#endif
+
 
     treeWidget->blockSignals(false);
 
@@ -374,7 +391,11 @@ void conditionalExpand(QTreeWidgetItem* item, int& idx, const QStringList& state
 
 void SettingsDialog::restoreSettingsTreeState(QTreeWidget* treeWidget)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     QStringList tree_expand_state = m_settings.value(_key_app_settings_tree_state).toString().split(',', QString::KeepEmptyParts);
+#else
+    QStringList tree_expand_state = m_settings.value(_key_app_settings_tree_state).toString().split(',', Qt::KeepEmptyParts);
+#endif
     int idx = 0;
     for (int i = 0; i < treeWidget->topLevelItemCount(); i++) {
         conditionalExpand(treeWidget->topLevelItem(i), idx, tree_expand_state);
@@ -850,7 +871,11 @@ QHotKeyInputDialog::QHotKeyInputDialog(const KeyType& editor_type, QWidget* pare
 void QHotKeyInputDialog::updateLabel()
 {
     setTextValue( QHotKeys::hotkeysToString(m_modifiersPressed,
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
                                             m_keysPressed.toList()) );
+#else
+                                            QList<Qt::Key>(m_keysPressed.begin(), m_keysPressed.end())) );
+#endif
 }
 
 void QHotKeyInputDialog::keyPressEvent(QKeyEvent* event)

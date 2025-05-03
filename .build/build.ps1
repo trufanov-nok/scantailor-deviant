@@ -1,0 +1,43 @@
+
+[CmdletBinding(PositionalBinding=$false)]
+param (
+#     [Parameter(Mandatory=$true)]
+#     [string] $GTestPath,
+#
+#     [Parameter(Mandatory=$false)]
+#     [string] $EncodingType = "WIN32API",
+
+    [Parameter(ValueFromRemainingArguments=$true)]
+    [string[]] $ExtraArgs
+)
+
+# Standard boilerplate
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
+
+# Go to repo root
+$repoRoot = (Resolve-Path "$PSScriptRoot\..").Path
+Push-Location $repoRoot
+
+try {
+    $null = New-Item -Path build -ItemType Directory -Force
+    cd build
+
+#     $env:VERBOSE = '1'
+
+    cmake .. @ExtraArgs
+    if ($LastExitCode -ne 0) {
+        throw "'cmake' exited with code $LastExitCode"
+    }
+
+    cmake --build .
+    if ($LastExitCode -ne 0) {
+        throw "'cmake --build' exited with code $LastExitCode"
+    }
+
+#     cp $GTestPath\debug\bin\*.dll tests\Debug
+#     cp Debug\kaitai_struct_qt_runtime.dll tests\Debug
+} finally {
+    Pop-Location
+}

@@ -195,7 +195,11 @@ public:
     }
     const QList<Qt::Key> keys() const
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         return m_keysPressed.toList();
+#else
+        return QList<Qt::Key>(m_keysPressed.begin(), m_keysPressed.end());
+#endif
     }
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
