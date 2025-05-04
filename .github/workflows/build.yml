@@ -195,6 +195,7 @@ jobs:
           CMAKE_BUILD_PARALLEL_LEVEL: 8
           QT_ROOT_DIR: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64'
           CMAKE_PREFIX_PATH: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64\'
+          CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
         run: |
           .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
       - name: Run autotests
