@@ -190,11 +190,13 @@ jobs:
       - name: build
         env:
           QT_VER: 'Qt5'
+          QtPkgList: 'Qt5'
           CMAKE_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
           QT_ROOT_DIR: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64'
+          CMAKE_PREFIX_PATH: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64\'
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DCMAKE_PREFIX_PATH="$QT_ROOT_DIR" -verbose 
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
