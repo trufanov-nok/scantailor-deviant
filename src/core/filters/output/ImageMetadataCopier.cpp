@@ -12,7 +12,7 @@ typedef Exiv2::Image::AutoPtr ExivUniquePtr;
 bool
 ImageMetadataCopier::iccProfileDefined(const QString& filename)
 {
-#ifdef _WIN32
+#ifdef EXV_UNICODE_PATH
     const ExivUniquePtr src_image = Exiv2::ImageFactory::open(filename.toStdWString());
 #else
     const ExivUniquePtr src_image = Exiv2::ImageFactory::open(filename.toStdString());
@@ -30,7 +30,7 @@ ImageMetadataCopier::copyMetadata(const QString& src_img,
 {
     try
     {
-#ifdef _WIN32
+#ifdef EXV_UNICODE_PATH
 		const ExivUniquePtr src_image = Exiv2::ImageFactory::open(src_img.toStdWString());
 #else
 		const ExivUniquePtr src_image = Exiv2::ImageFactory::open(src_img.toStdString());
@@ -41,7 +41,7 @@ ImageMetadataCopier::copyMetadata(const QString& src_img,
 
             if (src_image->iccProfileDefined()) {
                 src_image->iccProfile();
-#ifdef _WIN32
+#ifdef EXV_UNICODE_PATH
 				const ExivUniquePtr dst_image = Exiv2::ImageFactory::open(dst_img.toStdWString());
 #else
 				const ExivUniquePtr dst_image = Exiv2::ImageFactory::open(dst_img.toStdString());
