@@ -236,7 +236,7 @@ jobs:
           release: "10.1"
           usesh: true
           prepare: |
-            /usr/sbin/pkg_add cmake MesaLib qt5-qtbase qt5-qtsvg qt5-qttools tiff jpeg png boost libcanberra openjpeg eigen exiv2
+            /usr/sbin/pkg_add cmake MesaLib qt5-qtbase qt5-qtsvg qt5-qttools tiff jpeg png boost libcanberra openjpeg eigen3 exiv2
 
           run: |
             echo '#### System information'
