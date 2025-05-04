@@ -172,7 +172,7 @@ jobs:
           CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\6.9.0\msvc2022_64\'
           CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=off -DVCPKG_TARGET_TRIPLET=x86-windows -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=off -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
@@ -206,7 +206,7 @@ jobs:
           CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64\'
           CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DVCPKG_TARGET_TRIPLET=x86-windows -verbose 
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
