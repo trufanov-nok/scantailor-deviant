@@ -9,6 +9,6 @@ fi
 
 cd build
 
-cmake .. -DCMAKE_BUILD_PARALLEL_LEVEL=8 ${@:+"$@"}
+cmake .. ${@:+"$@"}
 cmake --build .
 

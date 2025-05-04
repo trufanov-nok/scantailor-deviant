@@ -25,8 +25,13 @@ jobs:
           QT_VER: 'Qt5'
           CMAKE_BUILD_TYPE: Release
           CPP_STANDARD: 17
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+      - name: Run autotests
+        env:
+          QT_QPA_PLATFORM: 'offscreen'
+        run: .build/test.sh
 
       - name: Make Package
         run: .build/package.sh
@@ -45,8 +50,6 @@ jobs:
         with:
           name: scantailor-deviant-linux-qt5
           path: build/scantailor-deviant-*.deb
-      # - name: Run tests
-      #   run:
 
   linux-Qt6:
     runs-on: ubuntu-24.04
@@ -64,8 +67,13 @@ jobs:
           QT_VER: 'Qt6'
           CMAKE_BUILD_TYPE: Release
           CPP_STANDARD: 17
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+      - name: Run autotests
+        env:
+          QT_QPA_PLATFORM: 'offscreen'
+        run: .build/test.sh
 
       - name: Make Package
         run: .build/package.sh
@@ -84,8 +92,6 @@ jobs:
         with:
           name: scantailor-deviant-linux-qt6
           path: build/scantailor-deviant-*.deb
-      # - name: Run tests
-      #   run:
 
   macos-15-Qt6:
     runs-on: macos-15
@@ -101,11 +107,14 @@ jobs:
         env:
           QT_VER: 'Qt6'
           CPP_STANDARD: 17
-          CMAKE_BUILD_TYPE: Debug
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
-      # - name: Run tests
-      #   run:
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+      - name: Run autotests
+        env:
+          QT_QPA_PLATFORM: 'offscreen'
+        run: .build/test.sh
 
   macos-13-Qt5:
     runs-on: macos-13
@@ -121,15 +130,18 @@ jobs:
         env:
           QT_VER: 'Qt5'
           CPP_STANDARD: 17
-          CMAKE_BUILD_TYPE: Debug
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
           export PATH="/usr/local/opt/qt@5/bin:$PATH"
           export LDFLAGS="-L/usr/local/opt/qt@5/lib"
           export CPPFLAGS="-I/usr/local/opt/qt@5/include"
           export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig"
-          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
-      # - name: Run tests
-      #   run:
+          .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+      - name: Run autotests
+        env:
+          QT_QPA_PLATFORM: 'offscreen'
+        run: .build/test.sh
 
   windows-Qt6:
     runs-on: windows-latest
@@ -139,18 +151,22 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.*'
-      - uses: actions/checkout@v4
       - name: restore
         run: |
-          C:\vcpkg\bootstrap-vcpkg.bat
-          C:\vcpkg\vcpkg install gtest:x64-windows zlib:x64-windows
+          C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows  eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
+      - uses: actions/checkout@v4
       - name: build
         env:
           QT_VER: 'Qt6'
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build\build.ps1 -GTestPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
-      # - name: tests
-      #   run:
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+      - name: Run autotests
+        env:
+          QT_QPA_PLATFORM: 'offscreen'
+        run: .build/test.sh
 
   windows-Qt5:
     runs-on: windows-latest
@@ -160,18 +176,22 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '5.*'
-      - uses: actions/checkout@v4
       - name: restore
         run: |
-          C:\vcpkg\bootstrap-vcpkg.bat
-          C:\vcpkg\vcpkg install gtest:x64-windows zlib:x64-windows
+          C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows  eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
+      - uses: actions/checkout@v4
       - name: build
         env:
           QT_VER: 'Qt5'
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build\build.ps1 -GTestPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
-      # - name: unittest
-      #   run:
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+      - name: Run autotests
+        env:
+          QT_QPA_PLATFORM: 'offscreen'
+        run: .build/test.sh
 
   freebsd_14_2-Qt5:
     runs-on: ubuntu-latest
@@ -196,9 +216,12 @@ jobs:
             pkg info
 
             echo '#### Building'
-            .build/build.sh -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+            export CMAKE_BUILD_PARALLEL_LEVEL=8
+            .build/build.sh -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
 
-            echo '#### Testing'
+            export QT_QPA_PLATFORM='offscreen'
+            echo '#### Testing
+            .build/test.sh'
 
   netbsd_10_1-Qt5:
     runs-on: ubuntu-latest
@@ -213,7 +236,7 @@ jobs:
           release: "10.1"
           usesh: true
           prepare: |
-            /usr/sbin/pkg_add cmake qt5-qtbase qt5-qtsvg tiff jpeg png boost libcanberra openjpeg eigen exiv2
+            /usr/sbin/pkg_add cmake MesaLib qt5-qtbase qt5-qtsvg qt5-qttools tiff jpeg png boost libcanberra openjpeg eigen exiv2
 
           run: |
             echo '#### System information'
@@ -223,7 +246,10 @@ jobs:
             gcc --version
 
             echo '#### Building'
-            .build/build.sh -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
+            export CMAKE_BUILD_PARALLEL_LEVEL=8
+            .build/build.sh -DCMAKE_CXX_STANDARD=11 -DENABLE_OPENGL=off -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
 
-            echo '#### Testing'
+            export QT_QPA_PLATFORM='offscreen'
+            echo '#### Testing
+            .build/test.sh'
 

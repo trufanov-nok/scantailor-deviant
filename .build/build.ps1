@@ -1,8 +1,8 @@
 
 [CmdletBinding(PositionalBinding=$false)]
 param (
-#     [Parameter(Mandatory=$true)]
-#     [string] $GTestPath,
+    [Parameter(Mandatory=$true)]
+    [string] $DPath,
 #
 #     [Parameter(Mandatory=$false)]
 #     [string] $EncodingType = "WIN32API",
@@ -36,8 +36,10 @@ try {
         throw "'cmake --build' exited with code $LastExitCode"
     }
 
-#     cp $GTestPath\debug\bin\*.dll tests\Debug
-#     cp Debug\kaitai_struct_qt_runtime.dll tests\Debug
+    dir $DPath\debug\bin\*.dll
+    dir $DPath\debug\bin\*.exe
+    dir $DPath\release\bin\*.dll
+    dir $DPath\release\bin\*.exe
 } finally {
     Pop-Location
 }
