@@ -16,7 +16,11 @@ Push-Location $repoRoot
 
 try {
     cd build
-    ctest .
+    ctest -C Debug --rerun-failed --output-on-failure .
+    if (Test-Path "D:/a/scantailor-deviant/scantailor-deviant/build/Testing/Temporary/LastTest.log") {
+        gc "D:/a/scantailor-deviant/scantailor-deviant/build/Testing/Temporary/LastTest.log"
+        gc "D:/a/scantailor-deviant/scantailor-deviant/build/Testing/Temporary/LastTest2.log"
+    }
 } finally {
     Pop-Location
 }

@@ -71,6 +71,10 @@ BOOST_AUTO_TEST_CASE(test_positive_detection)
 
     SkewFinder skew_finder;
     Skew const skew(skew_finder.findSkew(BinaryImage(image)));
+    auto f = fopen("D:/a/scantailor-deviant/scantailor-deviant/build/Testing/Temporary/LastTest2.log", "a");
+    if (f)
+    fprintf (f, "truf skew.angle() %f\n", skew.angle());
+    fclose(f);
     BOOST_REQUIRE(fabs(skew.angle() - 4.5) < 0.15);
     BOOST_CHECK(skew.confidence() >= Skew::GOOD_CONFIDENCE);
 }

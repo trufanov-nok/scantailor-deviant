@@ -20,6 +20,10 @@ jobs:
         run: sudo apt-get install -y qtbase5-dev libqt5svg5-dev qttools5-dev libtiff5-dev libjpeg-dev libpng-dev libboost-all-dev libcanberra-dev libopenjp2-7-dev libeigen3-dev libexiv2-dev
 
       - uses: actions/checkout@v4
+      - name: Code checks
+        run: |
+          sudo apt-get install -y shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt5'
@@ -62,6 +66,10 @@ jobs:
         run: sudo apt-get install -y qt6-base-dev libqt6svg6-dev qt6-tools-dev libtiff5-dev libjpeg-dev libpng-dev libboost-all-dev libcanberra-dev libopenjp2-7-dev libeigen3-dev libexiv2-dev
 
       - uses: actions/checkout@v4
+      - name: Code checks
+        run: |
+          sudo apt-get install -y shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt6'
@@ -98,11 +106,16 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
       - name: Install packages
         run: brew install jpeg libpng boost libcanberra openjpeg eigen exiv2
       - name: Install Qt
         run: brew install qt@6
+
+      - uses: actions/checkout@v4
+      - name: Code checks
+        run: |
+          brew install shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt6'
@@ -121,11 +134,16 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
       - name: Install packages
         run: brew install jpeg libpng boost libcanberra openjpeg eigen exiv2
       - name: Install Qt
         run: brew install qt@5 && brew link qt@5 --force
+
+      - uses: actions/checkout@v4
+      - name: Code checks
+        run: |
+          brew install shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt5'
@@ -150,23 +168,42 @@ jobs:
       - name: Install Qt6
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.*'
-      - name: restore
+          version: '6.9.0'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+          install-deps: 'true'
+          archives: 'qtbase qtimageformats qtsvg qttools'
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        env:
+          VCPKG_BUILD_TYPE: Release
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
-          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows  eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
-      - uses: actions/checkout@v4
+          C:\vcpkg\vcpkg install tiff libpng openjpeg libjpeg-turbo eigen3 exiv2[nls] opengl  --overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" --triplet x64-windows-dynamic-boost-static
+      - name: Install boost
+        env:
+          VCPKG_BUILD_TYPE: Release
+        run: |
+          C:\vcpkg\vcpkg install boost-core boost-foreach boost-bind boost-multi-index boost-mpl boost-test boost-iterator boost-intrusive boost-random boost-range boost-type-traits --overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" --triplet x64-windows-dynamic-boost-static
       - name: build
         env:
-          QT_VER: 'Qt6'
+          QtPkgList: 'Qt6'
           CMAKE_BUILD_TYPE: Release
+          VCPKG_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
+          QT_ROOT_DIR: '${{ github.workspace }}\Qt\6.9.0\msvc2022_64\'
+          CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\6.9.0\msvc2022_64\'
+          CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
+          VCPKG_OVERLAY_TRIPLETS: '${{ github.workspace }}\.build\st-vcpkg-triplets' # https://github.com/microsoft/vcpkg/discussions/33256#discussioncomment-6761851
+          VCPKG_TARGET_TRIPLET: 'x64-windows-dynamic-boost-static'
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+          .build\build.ps1 -DPath "C:\vcpkg\installed\${{ env.VCPKG_TARGET_TRIPLET }}" -DVCPKG_TARGET_TRIPLET="${{ env.VCPKG_TARGET_TRIPLET }}" -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="${{ env.QtPkgList }}" -verbose 
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
-        run: .build/test.sh
+        run: |
+          .build/test.ps1
 
   windows-Qt5:
     runs-on: windows-latest
@@ -175,23 +212,40 @@ jobs:
       - name: Install Qt5
         uses: jurplel/install-qt-action@v4
         with:
-          version: '5.*'
-      - name: restore
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          install-deps: 'true'
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        env:
+          VCPKG_BUILD_TYPE: Release
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
-          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows  eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
-      - uses: actions/checkout@v4
+          C:\vcpkg\vcpkg install tiff libpng openjpeg libjpeg-turbo eigen3 exiv2 opengl --overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" --triplet x64-windows-dynamic-boost-static
+      - name: Install boost
+        env:
+          VCPKG_BUILD_TYPE: Release
+        run: |
+          C:\vcpkg\vcpkg install boost-core boost-foreach boost-bind boost-multi-index boost-mpl boost-test boost-iterator boost-intrusive boost-random boost-range boost-type-traits --overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" --triplet x64-windows-dynamic-boost-static
       - name: build
         env:
-          QT_VER: 'Qt5'
+          QtPkgList: 'Qt5'
           CMAKE_BUILD_TYPE: Release
+          VCPKG_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
+          QT_ROOT_DIR: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64'
+          CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64\'
+          CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
+          VCPKG_OVERLAY_TRIPLETS: '${{ github.workspace }}\.build\st-vcpkg-triplets' # https://github.com/microsoft/vcpkg/discussions/33256#discussioncomment-6761851
+          VCPKG_TARGET_TRIPLET: 'x64-windows-dynamic-boost-static'
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+          .build\build.ps1 -DPath "C:\vcpkg\installed\${{ env.VCPKG_TARGET_TRIPLET }}" -DVCPKG_TARGET_TRIPLET="${{ env.VCPKG_TARGET_TRIPLET }}" -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="${{ env.QtPkgList }}" -verbose 
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
-        run: .build/test.sh
+        run: .build/test.ps1
 
   freebsd_14_2-Qt5:
     runs-on: ubuntu-latest
@@ -204,6 +258,7 @@ jobs:
           usesh: true
           prepare: |
             pkg install -y git cmake qt5-core qt5-widgets qt5-svg qt5-xml qt5-linguisttools qt5-opengl qt5-printsupport qt5-qmake qt5-buildtools tiff libjpeg-turbo png boost-all libcanberra openjpeg eigen exiv2
+            pkg install -y hs-ShellCheck
 
           run: |
             echo '#### System information'
@@ -214,6 +269,9 @@ jobs:
             gcc --version || :
             clang++ --version || :
             pkg info
+
+            echo '#### Code checks'
+            .build/check_scripts.sh
 
             echo '#### Building'
             export CMAKE_BUILD_PARALLEL_LEVEL=8
@@ -237,6 +295,7 @@ jobs:
           usesh: true
           prepare: |
             /usr/sbin/pkg_add cmake MesaLib x11-links libepoxy qt5-qtbase qt5-qtsvg qt5-qttools tiff jpeg png boost libcanberra openjpeg eigen3 exiv2
+            /usr/sbin/pkg_add shellcheck
 
           run: |
             echo '#### System information'
@@ -244,6 +303,9 @@ jobs:
             env
             c++ --version
             gcc --version
+
+            echo '#### Code checks'
+            .build/check_scripts.sh
 
             echo '#### Building'
             export CMAKE_BUILD_PARALLEL_LEVEL=8

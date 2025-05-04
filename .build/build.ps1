@@ -36,10 +36,6 @@ try {
         throw "'cmake --build' exited with code $LastExitCode"
     }
 
-    dir $DPath\debug\bin\*.dll
-    dir $DPath\debug\bin\*.exe
-    dir $DPath\release\bin\*.dll
-    dir $DPath\release\bin\*.exe
 } finally {
     Pop-Location
 }

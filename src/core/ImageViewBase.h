@@ -282,33 +282,33 @@ public:
     }
 
 protected:
-    virtual void paintEvent(QPaintEvent* event);
+    virtual void paintEvent(QPaintEvent* event) override;
 
-    virtual void keyPressEvent(QKeyEvent* event);
+    virtual void keyPressEvent(QKeyEvent* event) override;
 
-    virtual void keyReleaseEvent(QKeyEvent* event);
+    virtual void keyReleaseEvent(QKeyEvent* event) override;
 
-    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void mousePressEvent(QMouseEvent* event) override;
 
-    virtual void mouseReleaseEvent(QMouseEvent* event);
+    virtual void mouseReleaseEvent(QMouseEvent* event) override;
 
-    virtual void mouseMoveEvent(QMouseEvent* event);
+    virtual void mouseMoveEvent(QMouseEvent* event) override;
 
-    virtual void wheelEvent(QWheelEvent* event);
+    virtual void wheelEvent(QWheelEvent* event) override;
 
-    virtual void contextMenuEvent(QContextMenuEvent* event);
+    virtual void contextMenuEvent(QContextMenuEvent* event) override;
 
-    virtual void mouseDoubleClickEvent(QMouseEvent* event);
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
-    virtual void resizeEvent(QResizeEvent* event);
+    virtual void resizeEvent(QResizeEvent* event) override;
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    virtual void enterEvent(QEvent* event);
+    virtual void enterEvent(QEvent* event) override;
 #else
-    virtual void enterEvent(QEnterEvent* event);
+    virtual void enterEvent(QEnterEvent* event) override;
 #endif
 
-    virtual void leaveEvent(QEvent* event);
+    virtual void leaveEvent(QEvent* event) override;
 
     /**
      * Returns the maximum viewport size (as if scrollbars are hidden)
