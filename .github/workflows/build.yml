@@ -162,7 +162,7 @@ jobs:
           CMAKE_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DQT_ROOT_DIR='D:\a\scantailor-deviant\Qt\6.9.0\msvc2022_64' -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
@@ -187,7 +187,7 @@ jobs:
           CMAKE_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
         run: |
-          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
+          .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DQT_ROOT_DIR='D:\a\scantailor-deviant\Qt\6.9.0\' -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$QT_ROOT_DIR"
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
