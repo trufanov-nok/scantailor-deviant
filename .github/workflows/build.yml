@@ -150,23 +150,27 @@ jobs:
       - name: Install Qt6
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.*'
+          version: '6.9.0'
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
           install-deps: 'true'
           archives: 'qtbase qtimageformats qtsvg qttools'
       - name: restore
+        env:
+          VCPKG_BUILD_TYPE: Release
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
           C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows  eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
       - uses: actions/checkout@v4
       - name: build
         env:
-          QT_VER: 'Qt6'
+          QtPkgList: 'Qt6'
           CMAKE_BUILD_TYPE: Release
-          CMAKE_BUILD_PARALLEL_LEVEL: 8D:\a\scantailor-deviant\scantailor-deviant\Qt\6.9.0\msvc2022_64\lib\cmake
+          CMAKE_BUILD_PARALLEL_LEVEL: 8
           QT_ROOT_DIR: '${{ github.workspace }}\Qt\6.9.0\msvc2022_64\'
+          CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\6.9.0\msvc2022_64\'
+          CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
         run: |
           .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList=$QT_VER -DCMAKE_PREFIX_PATH='$Qt6_DIR' -DQT_ROOT_DIR='$QT_ROOT_DIR' -verbose 
       - name: Run autotests
@@ -181,20 +185,25 @@ jobs:
       - name: Install Qt5
         uses: jurplel/install-qt-action@v4
         with:
-          version: '5.*'
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          install-deps: 'true'
       - name: restore
+        env:
+          VCPKG_BUILD_TYPE: Release
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
-          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost:x64-windows eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
+          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
       - uses: actions/checkout@v4
       - name: build
         env:
-          QT_VER: 'Qt5'
           QtPkgList: 'Qt5'
           CMAKE_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
-          QT_ROOT_DIR: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64'
-          CMAKE_PREFIX_PATH: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64\'
+          QT_ROOT_DIR: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64'
+          CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64\'
           CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
         run: |
           .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
