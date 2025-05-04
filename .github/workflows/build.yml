@@ -108,7 +108,7 @@ jobs:
           QT_VER: 'Qt6'
           CPP_STANDARD: 17
           CMAKE_BUILD_TYPE: Release
-          CMAKE_BUILD_PARALLEL_LEVEL: 8
+          CMAKE_BUILD_PARALLEL_LEVEL: Get-ChildItem -Path "D:\Content Writing" -Recurse8
         run: |
           .build/build.sh -DQtPkgList="$QT_VER" -DCMAKE_BUILD_TYPE="$CMAKE_BUILD_TYPE" -DCMAKE_CXX_STANDARD="$CPP_STANDARD" -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF
       - name: Run autotests
@@ -159,6 +159,7 @@ jobs:
           dir: '${{ github.workspace }}'
       - name: restore
         run: |
+          Get-ChildItem -Path "${{ github.workspace }}" -Recurse
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
           C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows  eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
       - uses: actions/checkout@v4
