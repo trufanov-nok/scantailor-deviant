@@ -151,6 +151,12 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.*'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+          install-deps: 'true'
+          archives: 'qtbase qtimageformats qtsvg qttools'
+          dir: '${{ github.workspace }}/Qt/'
       - name: restore
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
@@ -161,7 +167,7 @@ jobs:
           QT_VER: 'Qt6'
           CMAKE_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
-          QT_ROOT_DIR: 'D:\a\scantailor-deviant\Qt\6.9.0\msvc2022_64'
+          QT_ROOT_DIR: '${{ github.workspace }}/Qt/'
         run: |
           .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$Qt6_DIR"
       - name: Run autotests
@@ -187,7 +193,7 @@ jobs:
           QT_VER: 'Qt5'
           CMAKE_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
-          QT_ROOT_DIR: 'D:\a\scantailor-deviant\Qt\6.9.0\msvc2022_64\lib'
+          QT_ROOT_DIR: 'D:\a\scantailor-deviant\Qt\5.15.2\msvc2019_64\lib'
         run: |
           .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="$QT_VER" -DQT_ROOT_DIR="$Qt5_DIR"
       - name: Run autotests
