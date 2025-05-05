@@ -20,6 +20,10 @@ jobs:
         run: sudo apt-get install -y qtbase5-dev libqt5svg5-dev qttools5-dev libtiff5-dev libjpeg-dev libpng-dev libboost-all-dev libcanberra-dev libopenjp2-7-dev libeigen3-dev libexiv2-dev
 
       - uses: actions/checkout@v4
+      - name: Code checks
+      - run: |
+          sudo apt-get install -y shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt5'
@@ -62,6 +66,10 @@ jobs:
         run: sudo apt-get install -y qt6-base-dev libqt6svg6-dev qt6-tools-dev libtiff5-dev libjpeg-dev libpng-dev libboost-all-dev libcanberra-dev libopenjp2-7-dev libeigen3-dev libexiv2-dev
 
       - uses: actions/checkout@v4
+      - name: Code checks
+      - run: |
+          sudo apt-get install -y shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt6'
@@ -98,11 +106,16 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
       - name: Install packages
         run: brew install jpeg libpng boost libcanberra openjpeg eigen exiv2
       - name: Install Qt
         run: brew install qt@6
+
+      - uses: actions/checkout@v4
+      - name: Code checks
+      - run: |
+          brew install shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt6'
@@ -121,11 +134,16 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
       - name: Install packages
         run: brew install jpeg libpng boost libcanberra openjpeg eigen exiv2
       - name: Install Qt
         run: brew install qt@5 && brew link qt@5 --force
+
+      - uses: actions/checkout@v4
+      - name: Code checks
+      - run: |
+          brew install shellcheck
+          .build/check_scripts.sh
       - name: Build
         env:
           QT_VER: 'Qt5'
@@ -173,12 +191,12 @@ jobs:
           CMAKE_TOOLCHAIN_FILE: 'C:\vcpkg\scripts\buildsystems\vcpkg.cmake'
         run: |
           .build\build.ps1 -DPath C:\vcpkg\installed\x64-windows -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=off -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DQtPkgList="Qt6" -verbose 
-      - name: Run autotests
+      - name: Run autotest
         env:
           QT_QPA_PLATFORM: 'offscreen'
         run: |
-        .build/test.sh
-        dir C:\vcpkg\installed\x64-windows\release\bin\*
+          .build/test.sh
+          dir C:\vcpkg\installed\x64-windows\release\bin\*
 
   windows-Qt5:
     runs-on: windows-latest
@@ -225,6 +243,7 @@ jobs:
           usesh: true
           prepare: |
             pkg install -y git cmake qt5-core qt5-widgets qt5-svg qt5-xml qt5-linguisttools qt5-opengl qt5-printsupport qt5-qmake qt5-buildtools tiff libjpeg-turbo png boost-all libcanberra openjpeg eigen exiv2
+            pkg install -y hs-ShellCheck
 
           run: |
             echo '#### System information'
@@ -235,6 +254,9 @@ jobs:
             gcc --version || :
             clang++ --version || :
             pkg info
+
+            echo '#### Code checks'
+            .build/check_scripts.sh
 
             echo '#### Building'
             export CMAKE_BUILD_PARALLEL_LEVEL=8
@@ -258,6 +280,7 @@ jobs:
           usesh: true
           prepare: |
             /usr/sbin/pkg_add cmake MesaLib x11-links libepoxy qt5-qtbase qt5-qtsvg qt5-qttools tiff jpeg png boost libcanberra openjpeg eigen3 exiv2
+            /usr/sbin/pkg_add shellcheck
 
           run: |
             echo '#### System information'
@@ -265,6 +288,9 @@ jobs:
             env
             c++ --version
             gcc --version
+
+            echo '#### Code checks'
+            .build/check_scripts.sh
 
             echo '#### Building'
             export CMAKE_BUILD_PARALLEL_LEVEL=8
