@@ -176,7 +176,9 @@ jobs:
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
-        run: .build/test.sh
+        run: |
+        .build/test.sh
+        dir C:\vcpkg\installed\x64-windows\release\bin\*
 
   windows-Qt5:
     runs-on: windows-latest
