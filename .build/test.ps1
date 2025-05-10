@@ -16,7 +16,7 @@ Push-Location $repoRoot
 
 try {
     cd build
-    ctest .
+    ctest . -C Debug
 } finally {
     Pop-Location
 }
