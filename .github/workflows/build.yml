@@ -225,6 +225,7 @@ jobs:
         env:
           QtPkgList: 'Qt5'
           CMAKE_BUILD_TYPE: Release
+          VCPKG_BUILD_TYPE: Release
           CMAKE_BUILD_PARALLEL_LEVEL: 8
           QT_ROOT_DIR: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64'
           CMAKE_PREFIX_PATH: '${{ github.workspace }}\Qt\5.15.2\msvc2019_64\'
