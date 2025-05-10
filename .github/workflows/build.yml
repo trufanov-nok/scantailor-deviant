@@ -232,7 +232,7 @@ jobs:
           VCPKG_OVERLAY_TRIPLETS: '${{ github.workspace }}\.build\st-vcpkg-triplets' # https://github.com/microsoft/vcpkg/discussions/33256#discussioncomment-6761851
           VCPKG_TARGET_TRIPLET: 'x64-windows-dynamic-boost-static'
         run: |
-          .build\build.ps1 -DPath "C:\vcpkg\installed\${{ VCPKG_TARGET_TRIPLET }}" -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
+          .build\build.ps1 -DPath "C:\vcpkg\installed\${{ env.VCPKG_TARGET_TRIPLET }}" -DCMAKE_CXX_STANDARD=11 -DENABLE_TESTS=on -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -verbose 
       - name: Run autotests
         env:
           QT_QPA_PLATFORM: 'offscreen'
