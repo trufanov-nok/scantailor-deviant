@@ -209,12 +209,17 @@ jobs:
           target: 'desktop'
           arch: 'win64_msvc2019_64'
           install-deps: 'true'
-      - name: restore
+      - name: Install dependencies
         env:
           VCPKG_BUILD_TYPE: Release
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
-          C:\vcpkg\vcpkg install tiff:x64-windows libpng:x64-windows openjpeg:x64-windows libjpeg-turbo:x64-windows boost-core:x64-windows boost-foreach:x64-windows boost-bind:x64-windows boost-multi-index:x64-windows boost-mpl:x64-windows boost-test:x64-windows-static-md boost-iterator:x64-windows boost-intrusive:x64-windows boost-random:x64-windows boost-range:x64-windows boost-type-traits:x64-windows eigen3:x64-windows exiv2:x64-windows opengl:x64-windows
+          C:\vcpkg\vcpkg install --triplet=x64-windows tiff libpng openjpeg libjpeg-turbo eigen3 exiv2 opengl
+      - name: Install boost
+        env:
+          VCPKG_BUILD_TYPE: Release
+        run: |
+          C:\vcpkg\vcpkg install --triplet=x64-windows-static-md boost-core boost-foreach boost-bind boost-multi-index boost-mpl boost-test boost-iterator boost-intrusive boost-random boost-range boost-type-traits
       - uses: actions/checkout@v4
       - name: build
         env:
