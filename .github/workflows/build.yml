@@ -214,12 +214,12 @@ jobs:
           VCPKG_BUILD_TYPE: Release
         run: |
           C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
-          C:\vcpkg\vcpkg install tiff libpng openjpeg libjpeg-turbo eigen3 exiv2 opengl -overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" -triplet x64-windows-dynamic-boost-static
+          C:\vcpkg\vcpkg install tiff libpng openjpeg libjpeg-turbo eigen3 exiv2 opengl --overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" --triplet x64-windows-dynamic-boost-static
       - name: Install boost
         env:
           VCPKG_BUILD_TYPE: Release
         run: |
-          C:\vcpkg\vcpkg install boost-core boost-foreach boost-bind boost-multi-index boost-mpl boost-test boost-iterator boost-intrusive boost-random boost-range boost-type-traits -overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" -triplet x64-windows-dynamic-boost-static
+          C:\vcpkg\vcpkg install boost-core boost-foreach boost-bind boost-multi-index boost-mpl boost-test boost-iterator boost-intrusive boost-random boost-range boost-type-traits --overlay-triplets "${{ github.workspace }}\.build\st-vcpkg-triplets" --triplet x64-windows-dynamic-boost-static
       - uses: actions/checkout@v4
       - name: build
         env:
