@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - CI
+      - CI_with_with_autotest
   pull_request: {}
 
 jobs:
